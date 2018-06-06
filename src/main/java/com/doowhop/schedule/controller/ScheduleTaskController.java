@@ -6,13 +6,16 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.doowhop.schedule.domain.TaskInfo;
+import com.doowhop.schedule.domain.ScheduleTask;
 import com.doowhop.schedule.enums.RetCodeEnum;
-import com.doowhop.schedule.service.TaskService;
+import com.doowhop.schedule.enums.TaskModeEnum;
+import com.doowhop.schedule.service.ScheduleTaskService;
 
 /**
  * 定时任务管理控制器
@@ -25,7 +28,7 @@ public class ScheduleTaskController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private TaskService taskService;
+	private ScheduleTaskService taskService;
 	
 	@GetMapping("/test1")
 	void test1(){
@@ -40,39 +43,31 @@ public class ScheduleTaskController {
 		System.out.println("test3--------3-------");
 	}
 	
-	/**初始化任务列表
-	 * 
-	 * @return
-	 */
-	@GetMapping("/init")
-	Map<String, Object> init(){
-		Map<String, Object> retMap = new HashMap<String, Object>(4);
-		retMap.put("retCode", RetCodeEnum.SUCCESS.getType());		
-		try {			
-			taskService.init();				
-		} catch (Exception e) {
-			logger.error("init Tasks has Exception: ", e);
-			retMap.put("retCode", RetCodeEnum.FAILED.getType());
-			retMap.put("errorMsg", e);
-		}		
-		return retMap;		
-	}
-	
 	/**添加任务
 	 * url, method, cron 必填
 	 * @param task 
 	 * @return
 	 */
-	@GetMapping("/add")
-	Map<String, Object> add(TaskInfo taskInfo){
+	@PostMapping("/addTask")
+	Map<String, Object> addTask(ScheduleTask task){
 		Map<String, Object> retMap = new HashMap<String, Object>(4);
-		retMap.put("retCode", RetCodeEnum.SUCCESS.getType());				
+		retMap.put("retCode", RetCodeEnum.SUCCESS.getCode());				
 		try {
-			taskService.add(taskInfo);		
+			if(!checkParam(task)) {
+				logger.info("ScheduleTaskController addTask Failed!");
+				retMap.put("code", RetCodeEnum.FAILED.getCode());
+				retMap.put("message", "参数缺失");
+			}
+			boolean ret = taskService.addTask(task);	
+			if(!ret) {
+				logger.info("ScheduleTaskController addTask Failed!");
+				retMap.put("code", RetCodeEnum.FAILED.getCode());
+				retMap.put("message", "添加失败");
+			}
 		} catch (Exception e) {
-			logger.error("add the Task[{}] has Exception: ", taskInfo.getUrl(), e);
-			retMap.put("retCode", RetCodeEnum.FAILED.getType());
-			retMap.put("errorMsg", e);
+			logger.error("ScheduleTaskController addTask has a Exception: {}", e);
+			retMap.put("code", RetCodeEnum.FAILED.getCode());
+			retMap.put("message", "系统异常");
 		}
 		return retMap;
 	}
@@ -81,34 +76,21 @@ public class ScheduleTaskController {
 	 * @param task
 	 * @return
 	 */
-	@GetMapping("/stop")
-	Map<String, Object> stop(long taskId) {
+	@GetMapping("/stopTask")
+	Map<String, Object> stopTask(long taskId) {
 		Map<String, Object> retMap = new HashMap<String, Object>(4);
-		retMap.put("retCode", RetCodeEnum.SUCCESS.getType());
+		retMap.put("retCode", RetCodeEnum.SUCCESS.getCode());
 		try {
-			taskService.stop(taskId);		
+			boolean ret = taskService.stopTask(taskId);
+			if(!ret) {
+				logger.info("ScheduleTaskController stopTask Failed!");
+				retMap.put("code", RetCodeEnum.FAILED.getCode());
+				retMap.put("message", "停止失败");
+			}
 		} catch (Exception e) {
-			logger.error("stop the Task[{}] has Exception: ", taskId, e);
-			retMap.put("retCode", RetCodeEnum.FAILED.getType());
-			retMap.put("errorMsg", e);
-		}
-		return retMap;
-	}
-	
-	/**暂停所有任务,可以重新启动
-	 * @param task
-	 * @return
-	 */
-	@GetMapping("/stopAll")
-	Map<String, Object> stopAll() {
-		Map<String, Object> retMap = new HashMap<String, Object>(4);
-		retMap.put("retCode", RetCodeEnum.SUCCESS.getType());
-		try {
-			taskService.stopAll();			
-		} catch (Exception e) {
-			logger.error("stopAll tasks has Exception: ", e);
-			retMap.put("retCode", RetCodeEnum.FAILED.getType());
-			retMap.put("errorMsg", e);
+			logger.error("ScheduleTaskController stopTask has a Exception: {}", e);
+			retMap.put("code", RetCodeEnum.FAILED.getCode());
+			retMap.put("message", "系统异常");
 		}
 		return retMap;
 	}
@@ -118,88 +100,90 @@ public class ScheduleTaskController {
 	 * @param task
 	 * @return
 	 */
-	@GetMapping("/start")
-	Map<String, Object> start(long taskId){
+	@GetMapping("/startTask")
+	Map<String, Object> startTask(long taskId){
 		Map<String, Object> retMap = new HashMap<String, Object>(4);
-		retMap.put("retCode", RetCodeEnum.SUCCESS.getType());
+		retMap.put("retCode", RetCodeEnum.SUCCESS.getCode());
 		try {
-			taskService.start(taskId);
+			boolean ret = taskService.startTask(taskId);
+			if(!ret) {
+				logger.info("ScheduleTaskController startTask Failed!");
+				retMap.put("code", RetCodeEnum.FAILED.getCode());
+				retMap.put("message", "启动失败");
+			}
 		} catch (Exception e) {
-			logger.error("start the Task[{}] has Exception: ", taskId, e);
-			retMap.put("retCode", RetCodeEnum.FAILED.getType());
+			logger.error("ScheduleTaskController startTask has a Exception: {}", e);
+			retMap.put("retCode", RetCodeEnum.FAILED.getCode());
 			retMap.put("errorMsg", e);
 		}
 		return retMap;
 	}
 	
-    /**删除任务
-     * @param task
-     * @return
-     */
-	@GetMapping("/delete")
-    Map<String, Object> delete(long taskId){
-		Map<String, Object> retMap = new HashMap<String, Object>(4);
-		retMap.put("retCode", RetCodeEnum.SUCCESS.getType());
-		try {
-			taskService.delete(taskId);
-		} catch (Exception e) {
-			logger.error("delete the Task[{}] has Exception: ", taskId, e);
-			retMap.put("retCode", RetCodeEnum.FAILED.getType());
-			retMap.put("errorMsg", e);
-		}
-		return retMap;
-	}
 	
 	  /**更新任务
      * @param task
      * @return
      */
-	@GetMapping("/update")
-    Map<String, Object> update(TaskInfo taskInfo){
+	@GetMapping("/modifyTask")
+    Map<String, Object> modifyTask(ScheduleTask task){
 		Map<String, Object> retMap = new HashMap<String, Object>(4);
-		retMap.put("retCode", RetCodeEnum.SUCCESS.getType());
+		retMap.put("retCode", RetCodeEnum.SUCCESS.getCode());
 		try {
-			taskService.update(taskInfo);
+			if(StringUtils.isEmpty(task.getTaskId())) {
+				logger.info("ScheduleTaskController modifyTask Failed!");
+				retMap.put("code", RetCodeEnum.FAILED.getCode());
+				retMap.put("message", "参数缺失");
+			}
+			boolean ret = taskService.modifyTask(task);
+			if(!ret) {
+				logger.info("ScheduleTaskController modifyTask Failed!");
+				retMap.put("code", RetCodeEnum.FAILED.getCode());
+				retMap.put("message", "更改失败");
+			}
 		} catch (Exception e) {
-			logger.error("reset the Task[{}] has Exception: ", taskInfo.getTaskId(), e);
-			retMap.put("retCode", RetCodeEnum.FAILED.getType());
+			logger.error("ScheduleTaskController modifyTask has a Exception: {}", e);
+			retMap.put("retCode", RetCodeEnum.FAILED.getCode());
 			retMap.put("errorMsg", e);
 		}			
 		return retMap;
 	}
     
-    /**重置任务
-     * @param task
-     * @return
-     */
-	@GetMapping("/reset")
-    Map<String, Object> reset(long taskId){
-		Map<String, Object> retMap = new HashMap<String, Object>(4);
-		retMap.put("retCode", RetCodeEnum.SUCCESS.getType());
-		try {
-			taskService.reset(taskId);
-		} catch (Exception e) {
-			logger.error("reset the Task[{}] has Exception: ", taskId, e);
-			retMap.put("retCode", RetCodeEnum.FAILED.getType());
-			retMap.put("errorMsg", e);
-		}			
-		return retMap;
-	}
-	
 	/**手动立即执行任务
 	 * @return
 	 */
-	Map<String, Object> startUp(long taskId){
+	@PostMapping("/mannualTask")
+	Map<String, Object> mannualTask(long taskId){
 		Map<String, Object> retMap = new HashMap<String, Object>(4);
-		retMap.put("retCode", RetCodeEnum.SUCCESS.getType());
+		retMap.put("retCode", RetCodeEnum.SUCCESS.getCode());
 		try {
-			taskService.startUp(taskId);
+			taskService.manualExcuteTask(taskId);
 		} catch (Exception e) {
 			logger.error("startUp the Task[{}] has Exception: ", taskId, e);
-			retMap.put("retCode", RetCodeEnum.FAILED.getType());
+			retMap.put("retCode", RetCodeEnum.FAILED.getCode());
 			retMap.put("errorMsg", e);
 		}
 		return retMap;
 	}
+	
+	
+	/**参数校验
+	 * @param taskInfo
+	 * @return
+	 */
+	private boolean checkParam(ScheduleTask task){
+		if(StringUtils.isEmpty(task.getTaskMode())) {
+			return false;
+		}
+		if(TaskModeEnum.CRON_TASK.getMode().equals(task.getTaskMode())) {
+			if(StringUtils.isEmpty(task.getCron())) {
+				return false;
+			}
+		}
+		if(StringUtils.isEmpty(task.getUrl()) || StringUtils.isEmpty(task.getMethod())
+				|| StringUtils.isEmpty(task.getContentType())){
+			return false;
+		}
+		return true;
+	}	
 
 }

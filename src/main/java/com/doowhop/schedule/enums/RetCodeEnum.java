@@ -2,43 +2,43 @@ package com.doowhop.schedule.enums;
 
 public enum RetCodeEnum {
 	
-	SUCCESS("000000","成功"),
-	FAILED("000002","失败"),	
+	SUCCESS("000000","处理成功"),
+	FAILED("000002","处理失败"),	
 	UNKNOWN("999999","未知异常");
     
-	private String type;
-	private String name;
+	private String code;
+	private String desc;
 	
-	RetCodeEnum(String type,String name) {
-		this.type = type;
-		this.name = name;
+	RetCodeEnum(String code,String desc) {
+		this.code = code;
+		this.desc = desc;
 	}
 	
 	
-	public String getType() {
-		return type;
+	public String getCode() {
+		return code;
 	}
 
 
-	public void setType(String type) {
-		this.type = type;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 
-	public String getName() {
-		return name;
+	public String getDesc() {
+		return desc;
 	}
 
 
-	public void setName(String name) {
-		this.name = name;
+	public void setDesc(String desc) {
+		this.desc = desc;
 	}
 	
 	
 	public static RetCodeEnum getRetCodeEnum(String value) {
 		if (value != null) {
 			for (RetCodeEnum retCodeEnum : values()) {
-				if (retCodeEnum.getType().equals(value)) {
+				if (retCodeEnum.getCode().equals(value)) {
 					return retCodeEnum;
 				}
 			}

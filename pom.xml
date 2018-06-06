@@ -65,6 +65,12 @@
            <version>2.7.0</version>
         </dependency>
         
+        <dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+        
        <!--移除热启动依赖, 修改代码热启动后会导致定时任务重复 -->
         <!-- 热启动，热部署依赖包 --> 
 	   <!-- <dependency>  

@@ -1,99 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.allinpal.twodfireschedule.mapper.TaskMapper">
-  <resultMap id="BaseResultMap" type="com.allinpal.twodfireschedule.domain.TaskInfo">
-    <id column="task_id" jdbcType="BIGINT" property="taskId" />
-    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
-    <result column="task_type" jdbcType="CHAR" property="taskType" />
-    <result column="url" jdbcType="VARCHAR" property="url" />
-    <result column="method" jdbcType="VARCHAR" property="method" />
-    <result column="post_param" jdbcType="VARCHAR" property="postParam" />
-    <result column="cron" jdbcType="VARCHAR" property="cron" />
-    <result column="initial_delay" jdbcType="VARCHAR" property="initialDelay" />
-    <result column="fixed_delay" jdbcType="VARCHAR" property="fixedDelay" />
-    <result column="fixed_rate" jdbcType="VARCHAR" property="fixedRate" />
-    <result column="is_immedi_exe" jdbcType="CHAR" property="isImmediExe" />
-    <result column="time_zone" jdbcType="VARCHAR" property="timeZone" />
-    <result column="next_execute" jdbcType="VARCHAR" property="nextExecute" />
-    <result column="last_execute" jdbcType="VARCHAR" property="lastExecute" />
-    <result column="state" jdbcType="CHAR" property="state" />
-    <result column="create_uid" jdbcType="VARCHAR" property="createUid" />
-    <result column="create_time" jdbcType="BIGINT" property="createTime" />
-    <result column="last_modify_uid" jdbcType="VARCHAR" property="lastModifyUid" />
-    <result column="last_modify_time" jdbcType="BIGINT" property="lastModifyTime" />
+<mapper namespace="com.doowhop.schedule.mapper.TaskMapper">
+  <resultMap id="BaseResultMap" type="com.doowhop.schedule.domain.ScheduleTask">
+    <id column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+    <result column="task_mode" property="taskMode" jdbcType="CHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="method" property="method" jdbcType="VARCHAR" />
+    <result column="param" property="param" jdbcType="VARCHAR" />
+    <result column="content_type" property="contentType" jdbcType="VARCHAR" />
+    <result column="cron" property="cron" jdbcType="VARCHAR" />
+    <result column="initial_delay" property="initialDelay" jdbcType="VARCHAR" />
+    <result column="fixed_delay" property="fixedDelay" jdbcType="VARCHAR" />
+    <result column="fixed_rate" property="fixedRate" jdbcType="VARCHAR" />
+    <result column="is_imd_exe" property="isImdExe" jdbcType="CHAR" />
+    <result column="last_execute_begin" property="lastExecuteBegin" jdbcType="VARCHAR" />
+    <result column="last_execute_end" property="lastExecuteEnd" jdbcType="VARCHAR" />
+    <result column="next_execute_time" property="nextExecuteTime" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="proc_state" property="procState" jdbcType="CHAR" />
+    <result column="create_uid" property="createUid" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_modify_uid" property="lastModifyUid" jdbcType="VARCHAR" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
   </resultMap>
-  <sql id="Base_Column_List">
-    task_id, task_name, task_type, url, method, post_param, cron, initial_delay, fixed_delay, 
-    fixed_rate, is_immedi_exe, time_zone, next_execute, last_execute, state, create_uid, 
-    create_time, last_modify_uid, last_modify_time
+  <sql id="Base_Column_List" >
+    task_id, task_name, task_mode, url, method, param, content_type, cron, initial_delay, fixed_delay, 
+    fixed_rate, is_imd_exe, last_execute_begin, last_execute_end, next_execute_time, 
+    status, proc_state, create_uid, create_time, last_modify_uid, last_modify_time
   </sql>
    
-  <select id="getTaskById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+   
+  <select id="selectTaskById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from 2dfire.t_schedule_task
-    where task_id = #{taskId,jdbcType=BIGINT} and state='1'
-  </select>
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </select> 
   
-  <select id="getTaskId" parameterType="com.allinpal.twodfireschedule.domain.TaskInfo" resultType="long">
-    select  task_id
-    from 2dfire.t_schedule_task
-    where url = #{url,jdbcType=VARCHAR}
-     and method = #{method,jdbcType=VARCHAR}
-     and cron = #{cron,jdbcType=VARCHAR}
-     and state='1' limit 1
-  </select>
-  
-  <select id="getTasksCnt" parameterType="com.allinpal.twodfireschedule.domain.TaskInfo" resultType="int">
+  <select id="selectTasksCnt" parameterType="com.doowhop.schedule.domain.ScheduleTask" resultType="int">
     select count(*) cnt
     from 2dfire.t_schedule_task
     <trim prefix="where" prefixOverrides="and|or">
-      <if test="taskName != null">
+       <if test="taskId != null">
+       and task_id = #{taskId,jdbcType=BIGINT}
+       </if>
+       <if test="taskName != null">
        and task_name = #{taskName,jdbcType=VARCHAR}
       </if>
-      <if test="taskType != null">
-       and task_type = #{taskType,jdbcType=CHAR}
+       <if test="taskMode != null" >
+       and task_mode = #{taskMode,jdbcType=CHAR}
       </if>
-      <if test="url != null">
+      <if test="url != null" >
        and url = #{url,jdbcType=VARCHAR}
       </if>
-      <if test="method != null">
+      <if test="method != null" >
        and method = #{method,jdbcType=VARCHAR}
       </if>
-      <if test="postParam != null">
-       and post_param = #{postParam,jdbcType=VARCHAR}
+      <if test="param != null" >
+       and param = #{param,jdbcType=VARCHAR}
       </if>
-      <if test="cron != null">
+      <if test="contentType != null" >
+       and content_type = #{contentType,jdbcType=VARCHAR}
+      </if>
+      <if test="cron != null" >
        and cron = #{cron,jdbcType=VARCHAR}
       </if>
-      <if test="initialDelay != null">
+      <if test="initialDelay != null" >
        and initial_delay = #{initialDelay,jdbcType=VARCHAR}
       </if>
-      <if test="fixedDelay != null">
+      <if test="fixedDelay != null" >
        and fixed_delay = #{fixedDelay,jdbcType=VARCHAR}
       </if>
-      <if test="fixedRate != null">
+      <if test="fixedRate != null" >
        and fixed_rate = #{fixedRate,jdbcType=VARCHAR}
       </if>
-      <if test="isImmediExe != null">
-       and is_immedi_exe = #{isImmediExe,jdbcType=CHAR}
+      <if test="isImdExe != null" >
+       and is_imd_exe = #{isImdExe,jdbcType=CHAR}
       </if>
-      <if test="timeZone != null">
-       and time_zone = #{timeZone,jdbcType=VARCHAR}
+      <if test="lastExecuteBegin != null" >
+       and last_execute_begin = #{lastExecuteBegin,jdbcType=VARCHAR}
       </if>
-      <if test="nextExecute != null">
-       and next_execute = #{nextExecute,jdbcType=VARCHAR}
+      <if test="lastExecuteEnd != null" >
+       and last_execute_end = #{lastExecuteEnd,jdbcType=VARCHAR}
       </if>
-      <if test="lastExecute != null">
-       and last_execute = #{lastExecute,jdbcType=VARCHAR}
+      <if test="nextExecuteTime != null" >
+       and next_execute_time = #{nextExecuteTime,jdbcType=VARCHAR}
       </if>
-      <if test="state != null">
-       and state = #{state,jdbcType=CHAR}
+      <if test="status != null" >
+       and status = #{status,jdbcType=CHAR}
+      </if>
+      <if test="procState != null" >
+       and proc_state = #{procState,jdbcType=CHAR}
+      </if>
+      <if test="createUid != null" >
+       and create_uid = #{createUid,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+       and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastModifyUid != null" >
+       and last_modify_uid = #{lastModifyUid,jdbcType=VARCHAR}
+      </if>
+      <if test="lastModifyTime != null" >
+       and last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
       </if>
     </trim>
   </select>
   
-  <select id="getTasks" parameterType="com.allinpal.twodfireschedule.domain.TaskInfo" resultMap="BaseResultMap">
+  
+  <select id="selectTasks" parameterType="com.doowhop.schedule.domain.ScheduleTask" resultMap="BaseResultMap">
     select  
      <include refid="Base_Column_List" />
     from 2dfire.t_schedule_task
@@ -101,215 +117,266 @@
       <if test="taskName != null">
        and task_name = #{taskName,jdbcType=VARCHAR}
       </if>
-      <if test="taskType != null">
-       and task_type = #{taskType,jdbcType=CHAR}
+       <if test="taskMode != null" >
+       and task_mode = #{taskMode,jdbcType=CHAR}
       </if>
-      <if test="url != null">
+      <if test="url != null" >
        and url = #{url,jdbcType=VARCHAR}
       </if>
-      <if test="method != null">
+      <if test="method != null" >
        and method = #{method,jdbcType=VARCHAR}
       </if>
-      <if test="postParam != null">
-       and post_param = #{postParam,jdbcType=VARCHAR}
+      <if test="param != null" >
+       and param = #{param,jdbcType=VARCHAR}
       </if>
-      <if test="cron != null">
+      <if test="contentType != null" >
+       and content_type = #{contentType,jdbcType=VARCHAR}
+      </if>
+      <if test="cron != null" >
        and cron = #{cron,jdbcType=VARCHAR}
       </if>
-      <if test="initialDelay != null">
+      <if test="initialDelay != null" >
        and initial_delay = #{initialDelay,jdbcType=VARCHAR}
       </if>
-      <if test="fixedDelay != null">
+      <if test="fixedDelay != null" >
        and fixed_delay = #{fixedDelay,jdbcType=VARCHAR}
       </if>
-      <if test="fixedRate != null">
+      <if test="fixedRate != null" >
        and fixed_rate = #{fixedRate,jdbcType=VARCHAR}
       </if>
-      <if test="isImmediExe != null">
-       and is_immedi_exe = #{isImmediExe,jdbcType=CHAR}
+      <if test="isImdExe != null" >
+       and is_imd_exe = #{isImdExe,jdbcType=CHAR}
       </if>
-      <if test="timeZone != null">
-       and time_zone = #{timeZone,jdbcType=VARCHAR}
+      <if test="lastExecuteBegin != null" >
+       and last_execute_begin = #{lastExecuteBegin,jdbcType=VARCHAR}
       </if>
-      <if test="nextExecute != null">
-       and next_execute = #{nextExecute,jdbcType=VARCHAR}
+      <if test="lastExecuteEnd != null" >
+       and last_execute_end = #{lastExecuteEnd,jdbcType=VARCHAR}
       </if>
-      <if test="lastExecute != null">
-       and last_execute = #{lastExecute,jdbcType=VARCHAR}
+      <if test="nextExecuteTime != null" >
+       and next_execute_time = #{nextExecuteTime,jdbcType=VARCHAR}
       </if>
-      <if test="state != null">
-       and state = #{state,jdbcType=CHAR}
+      <if test="status != null" >
+       and status = #{status,jdbcType=CHAR}
+      </if>
+      <if test="procState != null" >
+       and proc_state = #{procState,jdbcType=CHAR}
+      </if>
+      <if test="createUid != null" >
+       and create_uid = #{createUid,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+       and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastModifyUid != null" >
+       and last_modify_uid = #{lastModifyUid,jdbcType=VARCHAR}
+      </if>
+      <if test="lastModifyTime != null" >
+       and last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
       </if>
     </trim>
   </select>
   
-  <update id="deleteTask" parameterType="java.lang.Long">
-    update 2dfire.t_schedule_task set state='0'
+   
+  <update id="updateTaskById" parameterType="com.doowhop.schedule.domain.ScheduleTask">
+     update t_schedule_task
+    <set >
+      <if test="taskName != null" >
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskMode != null" >
+        task_mode = #{taskMode,jdbcType=CHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="method != null" >
+        method = #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="param != null" >
+        param = #{param,jdbcType=VARCHAR},
+      </if>
+      <if test="contentType != null" >
+        content_type = #{contentType,jdbcType=CHAR},
+      </if>
+      <if test="cron != null" >
+        cron = #{cron,jdbcType=VARCHAR},
+      </if>
+      <if test="initialDelay != null" >
+        initial_delay = #{initialDelay,jdbcType=VARCHAR},
+      </if>
+      <if test="fixedDelay != null" >
+        fixed_delay = #{fixedDelay,jdbcType=VARCHAR},
+      </if>
+      <if test="fixedRate != null" >
+        fixed_rate = #{fixedRate,jdbcType=VARCHAR},
+      </if>
+      <if test="isImdExe != null" >
+        is_imd_exe = #{isImdExe,jdbcType=CHAR},
+      </if>
+      <if test="lastExecuteBegin != null" >
+        last_execute_begin = #{lastExecuteBegin,jdbcType=VARCHAR},
+      </if>
+      <if test="lastExecuteEnd != null" >
+        last_execute_end = #{lastExecuteEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="nextExecuteTime != null" >
+        next_execute_time = #{nextExecuteTime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="procState != null" >
+        proc_state = #{procState,jdbcType=CHAR},
+      </if>
+      <if test="createUid != null" >
+        create_uid = #{createUid,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyUid != null" >
+        last_modify_uid = #{lastModifyUid,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
     where task_id = #{taskId,jdbcType=BIGINT}
   </update>
   
-  <insert id="addTask" parameterType="com.allinpal.twodfireschedule.domain.TaskInfo">
-    insert into 2dfire.t_schedule_task
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="taskName != null">
+  <insert id="insertTask" parameterType="com.doowhop.schedule.domain.ScheduleTask" >
+    insert into t_schedule_task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="taskName != null" >
         task_name,
       </if>
-      <if test="taskType != null">
-        task_type,
+      <if test="taskMode != null" >
+        task_mode,
       </if>
-      <if test="url != null">
+      <if test="url != null" >
         url,
       </if>
-      <if test="method != null">
+      <if test="method != null" >
         method,
       </if>
-      <if test="postParam != null">
-        post_param,
+      <if test="param != null" >
+        param,
       </if>
-      <if test="cron != null">
+      <if test="contentType != null" >
+        content_type,
+      </if>
+      <if test="cron != null" >
         cron,
       </if>
-      <if test="initialDelay != null">
+      <if test="initialDelay != null" >
         initial_delay,
       </if>
-      <if test="fixedDelay != null">
+      <if test="fixedDelay != null" >
         fixed_delay,
       </if>
-      <if test="fixedRate != null">
+      <if test="fixedRate != null" >
         fixed_rate,
       </if>
-      <if test="isImmediExe != null">
-        is_immedi_exe,
+      <if test="isImdExe != null" >
+        is_imd_exe,
       </if>
-      <if test="timeZone != null">
-        time_zone,
+      <if test="lastExecuteBegin != null" >
+        last_execute_begin,
       </if>
-      <if test="nextExecute != null">
-        next_execute,
+      <if test="lastExecuteEnd != null" >
+        last_execute_end,
       </if>
-      <if test="lastExecute != null">
-        last_execute,
+      <if test="nextExecuteTime != null" >
+        next_execute_time,
       </if>
-      <if test="state != null">
-        state,
+      <if test="status != null" >
+        status,
       </if>
-      <if test="createUid != null">
+      <if test="procState != null" >
+        proc_state,
+      </if>
+      <if test="createUid != null" >
         create_uid,
       </if>
-      <if test="createTime != null">
+      <if test="createTime != null" >
         create_time,
       </if>
-      <if test="lastModifyUid != null">
+      <if test="lastModifyUid != null" >
         last_modify_uid,
       </if>
-      <if test="lastModifyTime != null">
+      <if test="lastModifyTime != null" >
         last_modify_time,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="taskName != null">
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="taskName != null" >
         #{taskName,jdbcType=VARCHAR},
       </if>
-      <if test="taskType != null">
-        #{taskType,jdbcType=CHAR},
+      <if test="taskMode != null" >
+        #{taskMode,jdbcType=CHAR},
       </if>
-      <if test="url != null">
+      <if test="url != null" >
         #{url,jdbcType=VARCHAR},
       </if>
-      <if test="method != null">
+      <if test="method != null" >
         #{method,jdbcType=VARCHAR},
       </if>
-      <if test="postParam != null">
-        #{postParam,jdbcType=VARCHAR},
+      <if test="param != null" >
+        #{param,jdbcType=VARCHAR},
       </if>
-      <if test="cron != null">
+      <if test="contentType != null" >
+        #{contentType,jdbcType=CHAR},
+      </if>
+      <if test="cron != null" >
         #{cron,jdbcType=VARCHAR},
       </if>
-      <if test="initialDelay != null">
+      <if test="initialDelay != null" >
         #{initialDelay,jdbcType=VARCHAR},
       </if>
-      <if test="fixedDelay != null">
+      <if test="fixedDelay != null" >
         #{fixedDelay,jdbcType=VARCHAR},
       </if>
-      <if test="fixedRate != null">
+      <if test="fixedRate != null" >
         #{fixedRate,jdbcType=VARCHAR},
       </if>
-      <if test="isImmediExe != null">
-        #{isImmediExe,jdbcType=CHAR},
+      <if test="isImdExe != null" >
+        #{isImdExe,jdbcType=CHAR},
       </if>
-      <if test="timeZone != null">
-        #{timeZone,jdbcType=VARCHAR},
+      <if test="lastExecuteBegin != null" >
+        #{lastExecuteBegin,jdbcType=VARCHAR},
       </if>
-      <if test="nextExecute != null">
-        #{nextExecute,jdbcType=VARCHAR},
+      <if test="lastExecuteEnd != null" >
+        #{lastExecuteEnd,jdbcType=VARCHAR},
       </if>
-      <if test="lastExecute != null">
-        #{lastExecute,jdbcType=VARCHAR},
+      <if test="nextExecuteTime != null" >
+        #{nextExecuteTime,jdbcType=VARCHAR},
       </if>
-      <if test="state != null">
-        #{state,jdbcType=CHAR},
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
       </if>
-      <if test="createUid != null">
+      <if test="procState != null" >
+        #{procState,jdbcType=CHAR},
+      </if>
+      <if test="createUid != null" >
         #{createUid,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=BIGINT},
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="lastModifyUid != null">
+      <if test="lastModifyUid != null" >
         #{lastModifyUid,jdbcType=VARCHAR},
       </if>
-      <if test="lastModifyTime != null">
-        #{lastModifyTime,jdbcType=BIGINT},
+      <if test="lastModifyTime != null" >
+        #{lastModifyTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
-  </insert>
-  
-  <update id="updateTask" parameterType="com.allinpal.twodfireschedule.domain.TaskInfo">
-    update 2dfire.t_schedule_task
-     <trim prefix="set" suffixOverrides=",">
-      <if test="taskName != null">
-        task_name = #{taskName,jdbcType=VARCHAR},
-      </if>
-      <if test="taskType != null">
-        task_type = #{taskType,jdbcType=CHAR},
-      </if>
-      <if test="url != null">
-        url = #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="method != null">
-        method = #{method,jdbcType=VARCHAR},
-      </if>
-      <if test="postParam != null">
-        post_param = #{postParam,jdbcType=VARCHAR},
-      </if>
-      <if test="cron != null">
-        cron = #{cron,jdbcType=VARCHAR},
-      </if>
-      <if test="initialDelay != null">
-        initial_delay = #{initialDelay,jdbcType=VARCHAR},
-      </if>
-      <if test="fixedDelay != null">
-        fixed_delay = #{fixedDelay,jdbcType=VARCHAR},
-      </if>
-      <if test="fixedRate != null">
-        fixed_rate = #{fixedRate,jdbcType=VARCHAR},
-      </if>
-      <if test="isImmediExe != null">
-        is_immedi_exe = #{isImmediExe,jdbcType=CHAR},
-      </if>
-      <if test="timeZone != null">
-        time_zone = #{timeZone,jdbcType=VARCHAR},
-      </if>
-      <if test="nextExecute != null">
-        next_execute = #{nextExecute,jdbcType=VARCHAR},
-      </if>
-      <if test="lastExecute != null">
-        last_execute = #{lastExecute,jdbcType=VARCHAR},
-      </if>
-      <if test="state != null">
-        state = #{state,jdbcType=CHAR},
-      </if>
-    </trim>
-    where task_id = #{taskId,jdbcType=BIGINT}
-  </update>
+  </insert> 
+
 </mapper>

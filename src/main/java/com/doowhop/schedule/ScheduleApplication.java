@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 @EnableScheduling
 @SpringBootApplication
 @PropertySource(value = {
-		"file:/app/thfd/conf/2dfire-schedule.properties"
+		"file:/app/thfd/conf/schedule-task.properties"
 		}, ignoreResourceNotFound = true)
 public class ScheduleApplication {
 	

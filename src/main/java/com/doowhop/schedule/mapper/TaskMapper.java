@@ -4,23 +4,19 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.doowhop.schedule.domain.TaskInfo;
+import com.doowhop.schedule.domain.ScheduleTask;
 
 @Mapper
 public interface TaskMapper {
 	
-	List<TaskInfo> getTasks(TaskInfo task);
+	List<ScheduleTask> selectTasks(ScheduleTask task);
 	
-	int addTask(TaskInfo task);
+	int insertTask(ScheduleTask task);
 	
-	int updateTask(TaskInfo task);
-	
-	int deleteTask(long taskId);
-	
-	int getTasksCnt(TaskInfo task);
+	int updateTaskById(ScheduleTask task);
+		
+	int selectTasksCnt(ScheduleTask task);
 
-	TaskInfo getTaskById(long taskId);
-
-	long getTaskId(TaskInfo taskInfo);
+	ScheduleTask selectTaskById(long taskId);
 
 }
