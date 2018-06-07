@@ -1,18 +1,24 @@
-CREATE TABLE schedule_task (
-	record_no varchar(30) NOT NULL, 
-	schedule_name varchar(30) COMMENT 'µ÷¶ÈÃû³Æ', 
-    schedule_category varchar(2) COMMENT 'µ÷¶È·ÖÀà£º0£¬²É¼¯µ÷¶È£»1£¬·ÖÎöµ÷¶È'
-	schedule_type varchar(2) COMMENT 'µ÷¶ÈÈÎÎñÀàĞÍ£º²É¼¯µ÷¶È(0)--001£¬ÊÜÀíÖ±ÁªÉÌ»§²É¼¯£»002£¬ÊÜÀí¼äÁªÊı¾İ²É¼¯£»003£¬ÊÕÒø±¦ÉÌ»§²É¼¯£»004£¬ÊÕÒø±¦·çÏÕ²É¼¯ / ·ÖÎöµ÷¶È(1)--101... ', 
-	cron varchar(20) COMMENT 'cron±í´ïÊ½', 
-	last_execute_start varchar(20) COMMENT 'ÉÏ´Îµ÷¶È¿ªÊ¼Ê±¼ä yyyyMMdd HHmmss', 
-	last_execute_end varchar(20) COMMENT 'ÉÏ´Îµ÷¶È½áÊøÊ±¼ä yyyyMMdd HHmmss', 
-	next_execute_time varchar(20) COMMENT 'ÏÂ´Îµ÷¶È¿ªÊ¼Ê±¼ä yyyyMMdd HHmmss', 
-	status char(1) COMMENT 'µ÷¶È×´Ì¬ 0-ÒÆ³ı(ÔİÍ£) 1-Õı³£', 
-	proc_state char(2) COMMENT 'µ÷¶ÈÖ´ĞĞ×´Ì¬ 00-Ö´ĞĞÍê³É(µÈ´ıÖ´ĞĞ) 01-Ö´ĞĞÖĞ',
-	create_uid varchar(30) COMMENT 'Â¼ÈëÈË', 
-	create_time bigint COMMENT 'Â¼ÈëÊ±¼ä', 
-	last_modify_uid varchar(30) COMMENT '×îºóĞŞ¸ÄÈË', 
-	last_modify_time bigint COMMENT '×îºóĞŞ¸ÄÊ±¼ä', 
-	PRIMARY KEY (record_no)
-	) 
-	ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='µ÷¶ÈÈÎÎñ±í';
+ drop table if exists t_schedule_task;
+ CREATE TABLE t_schedule_task (
+	task_id bigint unsigned NOT NULL AUTO_INCREMENT, 
+	task_name varchar(30) COMMENT 'è°ƒåº¦ä»»åŠ¡åç§°', 
+	task_mode char(2) COMMENT 'è°ƒåº¦å®šæ—¶æ–¹å¼ 01-cronTask 02-fixedRateTask 03-fixedDelayTask 04-triggerTask', 
+	url varchar(60) COMMENT 'è°ƒåº¦ä»»åŠ¡URL', 	
+	method varchar(10) COMMENT 'è°ƒç”¨æ–¹å¼ get post', 
+	param varchar(200) COMMENT 'å‚æ•°(Jsonå­—ç¬¦ä¸²)',
+	content_type char(2) COMMENT'01-application/json 02-application/x-www-form-urlencoded',
+	cron varchar(20) COMMENT 'cronè¡¨è¾¾å¼', 
+	initial_delay varchar(20) COMMENT 'åˆå§‹å»¶è¿Ÿ', 
+	fixed_delay varchar(20) COMMENT 'å›ºå®šå»¶è¿Ÿ', 
+	fixed_rate varchar(20) COMMENT 'å›ºå®šé¢‘ç‡', 
+	is_imd_exe char(1) COMMENT 'æ˜¯å¦ç«‹å³æ‰§è¡Œ Y-æ˜¯, N-å¦', 
+	last_execute_begin datetime  COMMENT 'ä¸Šæ¬¡è°ƒåº¦å¼€å§‹æ—¶é—´', 
+	last_execute_end datetime  COMMENT 'ä¸Šæ¬¡è°ƒåº¦ç»“æŸæ—¶é—´', 
+	next_execute_time datetime  COMMENT 'ä¸‹æ¬¡è°ƒåº¦å¼€å§‹æ—¶é—´', 
+	status char(1) COMMENT 'è°ƒåº¦çŠ¶æ€ 0-ç§»é™¤(æš‚åœ) 1-æ­£å¸¸', 
+	proc_state char(2) COMMENT 'è°ƒåº¦æ‰§è¡ŒçŠ¶æ€ 00-æ‰§è¡Œå®Œæˆ(ç­‰å¾…æ‰§è¡Œ) 01-æ‰§è¡Œä¸­',
+	create_uid varchar(30) COMMENT 'å½•å…¥äºº', 
+	create_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'å½•å…¥æ—¶é—´', 
+	last_modify_uid varchar(30) COMMENT 'æœ€åä¿®æ”¹äºº', 
+	last_modify_time timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'æœ€åä¿®æ”¹æ—¶é—´', 
+	PRIMARY KEY (task_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='è°ƒåº¦ä»»åŠ¡è¡¨';

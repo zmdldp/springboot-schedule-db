@@ -70,7 +70,13 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.3</version>
 		</dependency>
-        
+		
+		<!--引用AOP-->
+		<dependency>
+		  <groupId>org.springframework.boot</groupId>
+		  <artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		     
        <!--移除热启动依赖, 修改代码热启动后会导致定时任务重复 -->
         <!-- 热启动，热部署依赖包 --> 
 	   <!-- <dependency>  
@@ -110,7 +116,7 @@
 			</plugin>				
 		</plugins>
 			   
-	   <finalName>twodfire-schedule</finalName>
+	   <finalName>schedule-task</finalName>
 	</build>
 
 </project>
