@@ -14,9 +14,9 @@
     <result column="fixed_delay" property="fixedDelay" jdbcType="VARCHAR" />
     <result column="fixed_rate" property="fixedRate" jdbcType="VARCHAR" />
     <result column="is_imd_exe" property="isImdExe" jdbcType="CHAR" />
-    <result column="last_execute_begin" property="lastExecuteBegin" jdbcType="VARCHAR" />
-    <result column="last_execute_end" property="lastExecuteEnd" jdbcType="VARCHAR" />
-    <result column="next_execute_time" property="nextExecuteTime" jdbcType="VARCHAR" />
+    <result column="last_execute_begin" property="lastExecuteBegin" jdbcType="TIMESTAMP" />
+    <result column="last_execute_end" property="lastExecuteEnd" jdbcType="TIMESTAMP" />
+    <result column="next_execute_time" property="nextExecuteTime" jdbcType="TIMESTAMP" />
     <result column="status" property="status" jdbcType="CHAR" />
     <result column="proc_state" property="procState" jdbcType="CHAR" />
     <result column="create_uid" property="createUid" jdbcType="VARCHAR" />
@@ -79,13 +79,13 @@
        and is_imd_exe = #{isImdExe,jdbcType=CHAR}
       </if>
       <if test="lastExecuteBegin != null" >
-       and last_execute_begin = #{lastExecuteBegin,jdbcType=VARCHAR}
+       and last_execute_begin = #{lastExecuteBegin,jdbcType=TIMESTAMP}
       </if>
       <if test="lastExecuteEnd != null" >
-       and last_execute_end = #{lastExecuteEnd,jdbcType=VARCHAR}
+       and last_execute_end = #{lastExecuteEnd,jdbcType=TIMESTAMP}
       </if>
       <if test="nextExecuteTime != null" >
-       and next_execute_time = #{nextExecuteTime,jdbcType=VARCHAR}
+       and next_execute_time = #{nextExecuteTime,jdbcType=TIMESTAMP}
       </if>
       <if test="status != null" >
        and status = #{status,jdbcType=CHAR}
@@ -148,13 +148,13 @@
        and is_imd_exe = #{isImdExe,jdbcType=CHAR}
       </if>
       <if test="lastExecuteBegin != null" >
-       and last_execute_begin = #{lastExecuteBegin,jdbcType=VARCHAR}
+       and last_execute_begin = #{lastExecuteBegin,jdbcType=TIMESTAMP}
       </if>
       <if test="lastExecuteEnd != null" >
-       and last_execute_end = #{lastExecuteEnd,jdbcType=VARCHAR}
+       and last_execute_end = #{lastExecuteEnd,jdbcType=TIMESTAMP}
       </if>
       <if test="nextExecuteTime != null" >
-       and next_execute_time = #{nextExecuteTime,jdbcType=VARCHAR}
+       and next_execute_time = #{nextExecuteTime,jdbcType=TIMESTAMP}
       </if>
       <if test="status != null" >
        and status = #{status,jdbcType=CHAR}
@@ -215,13 +215,13 @@
         is_imd_exe = #{isImdExe,jdbcType=CHAR},
       </if>
       <if test="lastExecuteBegin != null" >
-        last_execute_begin = #{lastExecuteBegin,jdbcType=VARCHAR},
+        last_execute_begin = #{lastExecuteBegin,jdbcType=TIMESTAMP},
       </if>
       <if test="lastExecuteEnd != null" >
-        last_execute_end = #{lastExecuteEnd,jdbcType=VARCHAR},
+        last_execute_end = #{lastExecuteEnd,jdbcType=TIMESTAMP},
       </if>
       <if test="nextExecuteTime != null" >
-        next_execute_time = #{nextExecuteTime,jdbcType=VARCHAR},
+        next_execute_time = #{nextExecuteTime,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=CHAR},
@@ -350,13 +350,13 @@
         #{isImdExe,jdbcType=CHAR},
       </if>
       <if test="lastExecuteBegin != null" >
-        #{lastExecuteBegin,jdbcType=VARCHAR},
+        #{lastExecuteBegin,jdbcType=TIMESTAMP},
       </if>
       <if test="lastExecuteEnd != null" >
-        #{lastExecuteEnd,jdbcType=VARCHAR},
+        #{lastExecuteEnd,jdbcType=TIMESTAMP},
       </if>
       <if test="nextExecuteTime != null" >
-        #{nextExecuteTime,jdbcType=VARCHAR},
+        #{nextExecuteTime,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null" >
         #{status,jdbcType=CHAR},

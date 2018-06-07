@@ -5,6 +5,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -18,7 +19,7 @@ import com.doowhop.schedule.util.CollectionUtils;
 import com.doowhop.schedule.util.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Service("requestSender")
+@Component("requestSender")
 public class RequestSender {
 	
 	@Autowired
@@ -54,11 +55,11 @@ public class RequestSender {
 				ret = restTemplate.getForObject(url, String.class);
 			} else {
 				logger.error("未知的contentType:{}!", contentType);
-			}
-			logger.info("-----定时任务[{}]结束, result:{}-----", url, ret);	
+			}			
 		} catch (Exception e) {
 			logger.error("-----定时任务发生异常-----", e);	
 		}
+		logger.info("-----定时任务[{}]结束, result:{}-----", url, ret);	
 		return ret;
 	}	
 }

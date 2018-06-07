@@ -57,12 +57,14 @@ public class ScheduleTaskController {
 				logger.info("ScheduleTaskController addTask Failed!");
 				retMap.put("code", RetCodeEnum.FAILED.getCode());
 				retMap.put("message", "参数缺失");
+				return retMap;
 			}
 			boolean ret = taskService.addTask(task);	
 			if(!ret) {
 				logger.info("ScheduleTaskController addTask Failed!");
 				retMap.put("code", RetCodeEnum.FAILED.getCode());
 				retMap.put("message", "添加失败");
+				return retMap;
 			}
 		} catch (Exception e) {
 			logger.error("ScheduleTaskController addTask has a Exception: {}", e);
@@ -76,7 +78,7 @@ public class ScheduleTaskController {
 	 * @param task
 	 * @return
 	 */
-	@GetMapping("/stopTask")
+	@PostMapping("/stopTask")
 	Map<String, Object> stopTask(long taskId) {
 		Map<String, Object> retMap = new HashMap<String, Object>(4);
 		retMap.put("retCode", RetCodeEnum.SUCCESS.getCode());
@@ -86,6 +88,7 @@ public class ScheduleTaskController {
 				logger.info("ScheduleTaskController stopTask Failed!");
 				retMap.put("code", RetCodeEnum.FAILED.getCode());
 				retMap.put("message", "停止失败");
+				return retMap;
 			}
 		} catch (Exception e) {
 			logger.error("ScheduleTaskController stopTask has a Exception: {}", e);
@@ -100,7 +103,7 @@ public class ScheduleTaskController {
 	 * @param task
 	 * @return
 	 */
-	@GetMapping("/startTask")
+	@PostMapping("/startTask")
 	Map<String, Object> startTask(long taskId){
 		Map<String, Object> retMap = new HashMap<String, Object>(4);
 		retMap.put("retCode", RetCodeEnum.SUCCESS.getCode());
@@ -110,6 +113,7 @@ public class ScheduleTaskController {
 				logger.info("ScheduleTaskController startTask Failed!");
 				retMap.put("code", RetCodeEnum.FAILED.getCode());
 				retMap.put("message", "启动失败");
+				return retMap;
 			}
 		} catch (Exception e) {
 			logger.error("ScheduleTaskController startTask has a Exception: {}", e);
@@ -124,7 +128,7 @@ public class ScheduleTaskController {
      * @param task
      * @return
      */
-	@GetMapping("/modifyTask")
+	@PostMapping("/modifyTask")
     Map<String, Object> modifyTask(ScheduleTask task){
 		Map<String, Object> retMap = new HashMap<String, Object>(4);
 		retMap.put("retCode", RetCodeEnum.SUCCESS.getCode());
@@ -133,6 +137,7 @@ public class ScheduleTaskController {
 				logger.info("ScheduleTaskController modifyTask Failed!");
 				retMap.put("code", RetCodeEnum.FAILED.getCode());
 				retMap.put("message", "参数缺失");
+				return retMap;
 			}
 			boolean ret = taskService.modifyTask(task);
 			if(!ret) {
@@ -179,8 +184,7 @@ public class ScheduleTaskController {
 				return false;
 			}
 		}
-		if(StringUtils.isEmpty(task.getUrl()) || StringUtils.isEmpty(task.getMethod())
-				|| StringUtils.isEmpty(task.getContentType())){
+		if(StringUtils.isEmpty(task.getUrl()) || StringUtils.isEmpty(task.getMethod())){
 			return false;
 		}
 		return true;
